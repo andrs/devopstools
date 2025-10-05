@@ -9,10 +9,11 @@ def create_app():
     app = Flask(__name__)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{username}:{password}@{host}:{port}/{database}'.format(
-        username=os.environ['POSTGRES_USERNAME'],
-        password=os.environ['POSTGRES_USERNAME_PASSWORD'],
-        port=os.environ['POSTGRES_PORT'],
-        database=os.environ['POSTGRES_DB_NAME'],
+        username=os.environ['USERNAME'],
+        password=os.environ['PASSWORD'],
+        port=os.environ['DB_NAME'],
+        database=os.environ['HOSTNAME'],
+        host=os.environ['PORT'],
     )
 
     # connect the app to the database
@@ -22,4 +23,5 @@ def create_app():
     app.register_blueprint(main_bp, url_prefix='/')
 
     return app
+
 

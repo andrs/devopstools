@@ -40,9 +40,11 @@ services:
         # waiting for the database to be ready
         condition: service_healthy
     environment:
-      USERNAME: ${POSTGRES_USER}
+      USERNAME: ${POSTGRES_USERNAME}
       PASSWORD: ${POSTGRES_PASSWORD}
-      PORT: 5432
+      DB_NAME: ${POSTGRES_DB_NAME}
+      HOSTNAME: ${HOSTNAME}
+      PORT: ${POSTGRES_PORT}
     volumes:
       - ./flask/app:/app/app
 
