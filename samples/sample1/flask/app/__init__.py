@@ -11,9 +11,9 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{username}:{password}@{host}:{port}/{database}'.format(
         username=os.environ['USERNAME'],
         password=os.environ['PASSWORD'],
-        port=os.environ['DB_NAME'],
-        database=os.environ['HOSTNAME'],
-        host=os.environ['PORT'],
+        database=os.environ['DB_NAME'],
+        host=os.environ['HOSTNAME'],
+        port=os.environ['PORT'],
     )
 
     # connect the app to the database

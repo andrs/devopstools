@@ -39,7 +39,7 @@ services:
       - backend
 
   flask-backend:
-    build: ./flask
+    build: flask
     container_name: flask-backend
     ports:
       - "5000:5000"
