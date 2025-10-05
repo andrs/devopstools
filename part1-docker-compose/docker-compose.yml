@@ -9,20 +9,9 @@ services:
       - db
     environment:
       - DB_HOST=db
-      - DB_NAME=andresdb
-      - DB_USER=andres
-      - DB_PASS=andres
-
-  db:
-    image: postgres:14
-    restart: always
-    environment:
-      POSTGRES_DB: taskdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - DB_NAME=taskdb
+      - DB_USER=postgres
+      - DB_PASS=postgres
 
   pgadmin:
     image: dpage/pgadmin4
@@ -38,6 +27,16 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: taskdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
 volumes:
   pgdata:
-  pgadmin_data:

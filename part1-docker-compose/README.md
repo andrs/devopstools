@@ -2,8 +2,8 @@
 
 ## Step 1: Project Structure
 ### Set up your project directory and virtual environment
-mkdir flask-compose-api
-cd flask-compose-api
+mkdir part1-docker-compose
+cd part1-docker-compose
 python3 -m venv .venv
 source .venv/bin/activate
 
@@ -20,8 +20,9 @@ flask-compose-api/
 
 ## commands
 ### Build and Run
-docker compose up --build -d
-docker compose up --build
+docker compose up -d
+
+docker compose down
 
 ## Add Task:
 ### task 1
