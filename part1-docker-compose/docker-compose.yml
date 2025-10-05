@@ -9,9 +9,9 @@ services:
       - db
     environment:
       - DB_HOST=db
-      - DB_NAME=taskdb
-      - DB_USER=postgres
-      - DB_PASS=postgres
+      - DB_NAME=andresdb
+      - DB_USER=andres
+      - DB_PASS=andres
 
   db:
     image: postgres:14
@@ -24,5 +24,20 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: andres@domain.com
+      PGADMIN_DEFAULT_PASSWORD: andres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
 volumes:
   pgdata:
+  pgadmin_data:
