@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+  psql-db:
+    image: postgres
+    container_name: local_pgdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: andres
+      POSTGRES_PASSWORD: andres
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # used in flask container depends_on condition to wait for the DB to be ready
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 20s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: andres@domain.com
+      PGADMIN_DEFAULT_PASSWORD: andres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  flask-backend:
+    build: ./flask
+    container_name: flask-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      psql-db:
+        # waiting for the database to be ready
+        condition: service_healthy
+    environment:
+      USERNAME: ${POSTGRES_USER}
+      PASSWORD: ${POSTGRES_PASSWORD}
+      PORT: 5432
+    volumes:
+      - ./flask/app:/app/app
+
+volumes:
+  local_pgdata:
+  pgadmin_data:
