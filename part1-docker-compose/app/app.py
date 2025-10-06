@@ -27,6 +27,7 @@ def get_tasks():
     conn.close()
     return jsonify(tasks)
 
+
 @app.route('/tasks', methods=['POST'])
 def add_task():
     data = request.get_json()

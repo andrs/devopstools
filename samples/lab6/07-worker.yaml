@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: devops-lab
+  labels: { app: worker }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: worker }
+  template:
+    metadata:
+      labels: { app: worker }
+    spec:
+      containers:
+        - name: worker
+          image: usuario/flaskapi:1.0    # misma imagen con Celery
+          command: ["sh","-lc"]
+          args:
+            - |
+              celery -A app.celery worker --loglevel=INFO
+          env:
+            - name: POSTGRES_USER
+              valueFrom: { secretKeyRef: { name: db-secret, key: POSTGRES_USER } }
+            - name: POSTGRES_PASSWORD
+              valueFrom: { secretKeyRef: { name: db-secret, key: POSTGRES_PASSWORD } }
+            - name: POSTGRES_DB
+              valueFrom: { secretKeyRef: { name: db-secret, key: POSTGRES_DB } }
+            - name: CELERY_BROKER_URL
+              valueFrom: { configMapKeyRef: { name: app-config, key: CELERY_BROKER_URL } }
+            - name: CELERY_RESULT_BACKEND
+              valueFrom: { configMapKeyRef: { name: app-config, key: CELERY_RESULT_BACKEND } }
+          readinessProbe:
+            exec: { command: ["sh","-lc","echo ok"] }
+            initialDelaySeconds: 5
+            periodSeconds: 5

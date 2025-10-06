@@ -18,6 +18,9 @@ flask-compose-api/
 └── .venv
 
 
+##  3. Dockerfile → construir imagen miapp:1.0 .
+sudo docker build -t app:1.0 .
+
 ## commands
 ### Build and Run
 docker compose up -d
