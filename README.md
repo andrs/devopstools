@@ -1,20 +1,12 @@
-# devopstools
-## comandos 
+# ✅ Final Year Project – DevOps Tool Integration Engineer
 
-python application.py
+### ✅ General Aim
 
-export HOSTNAME=localhost
+Students are required to design, implement, and document a database-driven web application. The application must be containerised using Docker, orchestrated with Kubernetes, provisioned with Ansible, and deployed via a CI/CD pipeline using Jenkins.
 
-export HOSTNAME=172.26.0.3
+The project must also include basic security and monitoring.
 
-
-export USERNAME=andres
-export PASSWORD=andres
-export PORT=5432
-export DB_NAME=andresdb
-
-
-
+## comandos utilizados
 ## pruebas
 docker run --name pgadmin-container -p 5050:80 -e PGADMIN_DEFAULT_EMAIL=andres@domain.com -e PGADMIN_DEFAULT_PASSWORD=andres -d dpage/pgadmin4
 

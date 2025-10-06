@@ -2,8 +2,7 @@ pipeline {
     agent any // any agent can run this job
 
       environment {
-            // Define el nombre de tu imagen como una variable para usarla fácilmente.
-            // Reemplaza 'tu-usuario-dockerhub' y 'mi-app' con tus propios valores.
+            // Define el nombre de la imagen que se construirá.
             DOCKER_IMAGE = "andrs/flaskapi"
         }
 
