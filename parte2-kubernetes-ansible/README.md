@@ -4,6 +4,47 @@ un playbook de Ansible y la estructura necesaria para realizar un despliegue com
 Este ejemplo crea un clúster de un solo nodo con kubeadm y luego despliega una aplicación.
 
 
+### create manifiest
+
+```yaml
+kubectl apply -f deploy.yaml
+kubectl apply -f svc.yaml
+kubectl apply -f ingress.yaml
+```
+
+```yaml
+kubectl -n proyecto-final get all
+kubectl -n proyecto-final get svc
+kubectl -n proyecto-final get ingress
+```
+
+```yaml
+kubectl -n proyecto-final describe ingress api-ingress
+kubectl -n proyecto-final get endpoints api
+kubectl -n proyecto-final logs deploy/api
+```
+
+## run
+```yaml
+kubectl run tester --image=curlimages/curl -it --rm --   sh -lc "curl http://172.20.251.174:80"
+
+
+ansible-playbook -i hosts deploy_app.yml --tags "install"
+
+ansible-playbook -i hosts deploy_app.yml
+```
+
+## fichero hosts
+```yaml
+
+[kubernetes_nodes]
+192.168.1.100
+
+```
+
+
+
+
 ## Estructura de Archivos
 Para organizar el proyecto de forma limpia y escalable, te recomiendo la siguiente estructura de carpetas y archivos:
 
@@ -16,5 +57,3 @@ ansible_k8s/
 │   └── app-deployment.yml
 ├── inventory.ini
 └── deploy_k8s_app.yml
-
-

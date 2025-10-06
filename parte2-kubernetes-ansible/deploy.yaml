@@ -1,0 +1,134 @@
+# --------------------------------------------------------------------------
+# SECCIÓN 1: CREACION DEL NAMESPACE
+# --------------------------------------------------------------------------
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: proyecto-final
+
+# --------------------------------------------------------------------------
+# SECCIÓN 1: CREACION DEL PERSISTVOLUMEN CLAIM
+# --------------------------------------------------------------------------
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pgdata
+  namespace: proyecto-final
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
+
+# --------------------------------------------------------------------------
+# SECCIÓN 1: CREACION DEL SECRET
+# --------------------------------------------------------------------------
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+  namespace: proyecto-final
+type: Opaque
+stringData:
+  POSTGRES_USER: labuser
+  POSTGRES_PASSWORD: labpass
+  POSTGRES_DB: labdb
+
+# --------------------------------------------------------------------------
+# SECCIÓN 1: CREACION DEL CONFIGMAP
+# --------------------------------------------------------------------------
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: proyecto-final
+data:
+  CELERY_BROKER_URL: amqp://guest:guest@rabbit:5672//
+  CELERY_RESULT_BACKEND: redis://redis:6379/0
+
+# --------------------------------------------------------------------------
+# SECCIÓN 1: CREACION DEL DEPLOYMENT DEL API
+# --------------------------------------------------------------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: proyecto-final
+  labels: { app: api }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: api }
+  template:
+    metadata:
+      labels: { app: api }
+    spec:
+      containers:
+        - name: api
+          image: andrs/flaskapi:10.0
+          #image: usuario/flaskapi:1.0   # <-- pon tu imagen
+          ports:
+            - containerPort: 5000
+          env:
+            - name: POSTGRES_USER
+              valueFrom: { secretKeyRef: { name: db-secret, key: POSTGRES_USER } }
+            - name: POSTGRES_PASSWORD
+              valueFrom: { secretKeyRef: { name: db-secret, key: POSTGRES_PASSWORD } }
+            - name: POSTGRES_DB
+              valueFrom: { secretKeyRef: { name: db-secret, key: POSTGRES_DB } }
+            - name: CELERY_BROKER_URL
+              valueFrom: { configMapKeyRef: { name: app-config, key: CELERY_BROKER_URL } }
+            - name: CELERY_RESULT_BACKEND
+              valueFrom: { configMapKeyRef: { name: app-config, key: CELERY_RESULT_BACKEND } }
+          envFrom:
+            - configMapRef: { name: app-config }
+          readinessProbe:
+            httpGet: { path: /ping, port: 5000 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /ping, port: 5000 }
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+# --------------------------------------------------------------------------
+# SECCIÓN 1: CREACION DEL DEPLOYMENT DE LA BBDD
+# --------------------------------------------------------------------------
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: proyecto-final
+  labels: { app: db }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: db }
+  template:
+    metadata:
+      labels: { app: db }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef: { name: db-secret }
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec: { command: ["pg_isready","-U","labuser"] }
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pgdata
