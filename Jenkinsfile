@@ -4,7 +4,7 @@ pipeline {
       environment {
             // Define el nombre de tu imagen como una variable para usarla fácilmente.
             // Reemplaza 'tu-usuario-dockerhub' y 'mi-app' con tus propios valores.
-            DOCKER_IMAGE = "andrsflaskapi:10.0"
+            DOCKER_IMAGE = "andrs/flaskapi"
         }
 
     stages {
