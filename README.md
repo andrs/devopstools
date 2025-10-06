@@ -54,6 +54,26 @@ sudo docker compose up -d
 sudo docker compose up -d
 sudo docker compose ps
 
+docker run -d -p 8080:80 -v datos_nginx:/usr/share/nginx/html nginx
+docker run -d --name web1 -p 8080:80 nginx
+
+docker exec -it web1 bash
+
+docker ps
+docker inspect web1
+
+docker rm -f web2
+
+docker volume create webdata
+docker run -d --name web2 -p 8080:80 -v webdata:/usr/share/nginx/html nginx
+
+docker exec -it web2 bash -c "echo 'Hola persistente' > /usr/share/nginx/html/index.html"
+docker rm -f web2
+
+docker run -d --name web3 -p 8080:80 -v webdata:/usr/share/nginx/html nginx
+
+### delete all images
+sudo docker image prune -a
 
 http://localhost:8888/login?next=/
 

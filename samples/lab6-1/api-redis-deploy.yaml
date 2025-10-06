@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: ghcr.io/tsl-edu/flask-echo:latest
+          image: andrs/flaskapi:5.0
           ports:
             - containerPort: 5000
           env:
