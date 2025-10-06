@@ -1,0 +1,184 @@
+# Playbook Completo de Ansible para Despliegue en Kubernetes
+
+Este playbook se encarga de todo el proceso: desde la configuración inicial del nodo con Docker y las herramientas de Kubernetes, hasta el despliegue final de tu aplicación.
+
+
+Este playbook asume que tienes un inventario de Ansible configurado para tus nodos objetivo.
+
+### playbook
+deploy_app.yml
+
+---
+- name: 1. Configurar Nodo y Desplegar Aplicación en Kubernetes
+  hosts: kubernetes_nodes
+  become: yes
+  vars:
+  project_user: "app_deployer"
+  project_dir: "/opt/my_app"
+  app_deployment_file: "deployment.yml"
+  app_service_file: "service.yml"
+
+  tasks:
+  # --------------------------------------------------------------------------
+  # SECCIÓN 1: INSTALACIÓN DE PREREQUISITOS (DOCKER Y KUBERNETES)
+  # --------------------------------------------------------------------------
+    - name: Actualizar caché de paquetes APT
+      ansible.builtin.apt:
+      update_cache: yes
+      cache_valid_time: 3600
+      tags: ['install']
+
+    - name: Instalar paquetes necesarios para Docker
+      ansible.builtin.apt:
+      name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      state: present
+      tags: ['install']
+
+    - name: Añadir clave GPG oficial de Docker
+      ansible.builtin.get_url:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      dest: /etc/apt/keyrings/docker.asc
+      mode: '0644'
+      force: yes
+      tags: ['install']
+
+    - name: Añadir el repositorio de Docker
+      ansible.builtin.apt_repository:
+      repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+      state: present
+      tags: ['install']
+
+    - name: Instalar Docker Engine
+      ansible.builtin.apt:
+      name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      state: present
+      update_cache: yes
+      tags: ['install']
+
+    - name: Añadir clave GPG de Kubernetes
+      ansible.builtin.get_url:
+      url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
+      dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
+      mode: '0644'
+      force: yes
+      tags: ['install']
+
+    - name: Añadir el repositorio de Kubernetes
+      ansible.builtin.apt_repository:
+      repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /"
+      state: present
+      filename: kubernetes
+      tags: ['install']
+
+    - name: Instalar kubeadm, kubelet y kubectl
+      ansible.builtin.apt:
+      name:
+      - kubelet
+      - kubeadm
+      - kubectl
+      state: present
+      update_cache: yes
+      tags: ['install']
+
+  # --------------------------------------------------------------------------
+  # SECCIÓN 2: CREACIÓN DE USUARIO Y DIRECTORIO DEL PROYECTO
+  # --------------------------------------------------------------------------
+    - name: Crear un usuario para el proyecto
+      ansible.builtin.user:
+      name: "{{ project_user }}"
+      state: present
+      shell: /bin/bash
+      tags: ['setup']
+
+    - name: Crear el directorio del proyecto
+      ansible.builtin.file:
+      path: "{{ project_dir }}"
+      state: directory
+      owner: "{{ project_user }}"
+      group: "{{ project_user }}"
+      mode: '0755'
+      tags: ['setup']
+
+  # --------------------------------------------------------------------------
+  # SECCIÓN 3: DESPLIEGUE AUTOMÁTICO DE LA APLICACIÓN
+  # --------------------------------------------------------------------------
+    - name: Copiar ficheros de manifiesto de Kubernetes al nodo
+      ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: "{{ project_dir }}/{{ item }}"
+      owner: "{{ project_user }}"
+      group: "{{ project_user }}"
+      loop:
+        - "{{ app_deployment_file }}"
+        - "{{ app_service_file }}"
+          tags: ['deploy']
+
+    - name: Desplegar la aplicación usando los manifiestos
+      community.kubernetes.k8s:
+      state: present
+      src: "{{ project_dir }}/{{ item }}"
+      loop:
+        - "{{ app_deployment_file }}"
+        - "{{ app_service_file }}"
+          tags: ['deploy']
+
+
+# Cómo Utilizar este Playbook
+Guarda el Contenido: Guarda el código anterior en un fichero llamado deploy_app.yml.
+
+Crea los Manifiestos de Kubernetes: En el mismo directorio donde guardaste deploy_app.yml, crea los ficheros de tu aplicación.
+
+### deployment.yml: Define el Deployment de tu aplicación.
+
+deployment.yml
+
+apiVersion: apps/v1
+kind: Deployment
+  metadata:
+    name: my-app-deployment
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: my-app
+    template:
+      metadata:
+        labels:
+          app: my-app
+      spec:
+        containers:
+          - name: my-app-container
+            image: nginx:latest # <-- Cambia esto por la imagen de tu aplicación
+            ports:
+              - containerPort: 80
+
+
+service.yml:
+
+apiVersion: v1
+kind: Service
+metadata:
+name: my-app-service
+spec:
+selector:
+app: my-app
+ports:
+- protocol: TCP
+port: 80
+targetPort: 80
+type: NodePort # O LoadBalancer si estás en un proveedor cloud
+
+
+Configura tu Inventario: Asegúrate de que tu fichero de inventario de Ansible (por ejemplo, hosts) tiene un grupo kubernetes_nodes con la IP o el nombre de host de tu servidor.
+
+[kubernetes_nodes]
+192.168.1.100
+
+ansible-playbook -i hosts deploy_app.yml

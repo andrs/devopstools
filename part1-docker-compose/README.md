@@ -29,11 +29,14 @@ docker compose down
 
 ## Add Task:
 ### task 1
-curl -X POST http://localhost:5000/tasks -H "Content-Type: application/json" -d '{"description": "Learn Docker Compose"}'
+curl -X POST http://localhost:5000/tasks -H "Content-Type: application/json" -d '{"description": "parte 2 del proyecto final del curso"}'
 
 ### task 1
-curl -X POST http://localhost:5000/tasks -H "Content-Type: application/json" -d '{"description": "Complete Project on Docker Compose"}'
+curl -X POST http://localhost:5000/tasks -H "Content-Type: application/json" -d '{"description": "parte 2 del proyecto final del curso"}'
 
 ### get tasks
 http://localhost:5000/tasks
+
+## cambiar puerto
+http://localhost:8080/tasks
 
