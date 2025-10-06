@@ -13,6 +13,9 @@ services:
       - DB_NAME=taskdb
       - DB_USER=postgres
       - DB_PASS=postgres
+    networks:
+      - frontend
+      - backend
 
   pgadmin:
     image: dpage/pgadmin4
@@ -27,6 +30,9 @@ services:
       PGADMIN_DEFAULT_PASSWORD: andres
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - frontend
+      - backend
 
   db:
     image: postgres:14
@@ -38,7 +44,19 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend
 
 volumes:
   pgdata:
   pgadmin_data:
+
+networks:
+  frontend:
+    # Specify driver options
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+  backend:
+    # Use a custom driver
+    driver: bridge

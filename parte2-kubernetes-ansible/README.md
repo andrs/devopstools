@@ -36,12 +36,20 @@ ansible-playbook -i hosts deploy_app.yml
 
 ## fichero hosts
 ```yaml
-
 [kubernetes_nodes]
 192.168.1.100
-
 ```
 
+## install ansible
+```yaml
+sudo apt install ansible
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+
+pip3 install ansible-lint jinja2
+```
 
 
 

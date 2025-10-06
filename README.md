@@ -37,6 +37,8 @@ SELECT * FROM user;
 
 ## comandos
 netstat -tulnp
+netstat -tulnp
+
 mkdir -p grafana/provisioning/{datasource,dashboards}
 sudo docker compose up -d
 sudo docker compose down
