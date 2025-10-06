@@ -1,6 +1,6 @@
 # ✅ Final Year Project – DevOps Tool Integration Engineer
 
-### ✅ General Aim
+### ✅ General Aim (usefully tools and commands for me and for anybody)
 
 Students are required to design, implement, and document a database-driven web application. The application must be containerised using Docker, orchestrated with Kubernetes, provisioned with Ansible, and deployed via a CI/CD pipeline using Jenkins.
 

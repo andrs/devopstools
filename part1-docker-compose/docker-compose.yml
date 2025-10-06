@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build: ./app
-    container_name: miapp:1.0
+    container_name: miapp
     ports:
       - "5000:5000"
     depends_on:
@@ -16,6 +16,8 @@ services:
     networks:
       - frontend
       - backend
+    links:
+      - db
 
   pgadmin:
     image: dpage/pgadmin4
@@ -33,6 +35,8 @@ services:
     networks:
       - frontend
       - backend
+    links:
+      - db
 
   db:
     image: postgres:14
@@ -41,11 +45,19 @@ services:
       POSTGRES_DB: taskdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      # used in flask container depends_on condition to wait for the DB to be ready
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d taskdb" ]
+      interval: 5s
+      timeout: 20s
+      retries: 5
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - backend
+
+
 
 volumes:
   pgdata:
