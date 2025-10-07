@@ -55,7 +55,8 @@ ansible -i inventory.ini all -m user -a "name=devops state=present"
 - Instalar paquete:
 
 ```bash
-ansible -i inventory.ini all -m apt -a "name=nginx state=present" --become
+
+
 ```
 
 ---
@@ -74,3 +75,15 @@ Comprobar:
 curl http://localhost
 ```
 
+## resultado
+```
+ubuntu@ip-10-0-10-102:~/project2/devopstools/samples/ansible$ curl http://localhost
+<html>
+<head><title>DevOps con Puppet</title></head>
+<body style="font-family:sans-serif">
+  <h1>¡Hola Andrés desde Puppet!. Usando anchor command</h1>
+  <p>Estado deseado aplicado con <strong>puppet apply</strong>.</p>
+</body>
+</html>
+ubuntu@ip-10-0-10-102:~/project2/devopstools/samples/ansible$
+```

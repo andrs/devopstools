@@ -1,0 +1,17 @@
+---
+- hosts: web
+  become: yes
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Copiar index.html con template
+      template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+      notify: Reiniciar nginx
+
+  handlers:
+    - name: Reiniciar nginx
+      service:
+        name: nginx
+        state: restarted

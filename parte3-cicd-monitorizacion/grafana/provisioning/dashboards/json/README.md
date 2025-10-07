@@ -1,0 +1,1 @@
+wget -O grafana/provisioning/dashboards/json/node-exporter-full.json https://grafana.com/api/dashboards/1860/revisions/33/download || true
