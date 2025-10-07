@@ -7,20 +7,30 @@
 
 ```bash
 # Red y dos contenedores con puertos SSH diferentes
-docker network create ansinet || true
-docker run -d --name node1 --hostname node1 --network ansinet -p 2221:22 ubuntu:22.04 sleep infinity
-docker run -d --name node2 --hostname node2 --network ansinet -p 2222:22 ubuntu:22.04 sleep infinity
+sudo docker network create ansinet || true
+sudo docker run -d --name node1 --hostname node1 --network ansinet -p 2221:22 ubuntu:22.04 sleep infinity
+sudo docker run -d --name node2 --hostname node2 --network ansinet -p 2222:22 ubuntu:22.04 sleep infinity
 
 # Instalar openssh-server y crear usuario 'ansible' con clave pública
 for n in node1 node2; do
-  docker exec -it $n bash -lc 'apt-get update && apt-get install -y openssh-server sudo && mkdir -p /run/sshd'
-  docker exec -it $n bash -lc 'useradd -m -s /bin/bash ansible && echo "ansible ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible'
+  sudo docker exec -it $n bash -lc 'apt-get update && apt-get install -y openssh-server sudo && mkdir -p /run/sshd'
+  sudo docker exec -it $n bash -lc 'useradd -m -s /bin/bash ansible && echo "ansible ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible'
   PUB=$(cat ~/.ssh/id_rsa.pub)
-  docker exec -it $n bash -lc "mkdir -p ~ansible/.ssh && echo '$PUB' > ~ansible/.ssh/authorized_keys && chown -R ansible:ansible ~ansible/.ssh && chmod 600 ~ansible/.ssh/authorized_keys"
-  docker exec -it $n bash -lc '/usr/sbin/sshd -D &'   # lanza el SSHD
+  sudo docker exec -it $n bash -lc "mkdir -p ~ansible/.ssh && echo '$PUB' > ~ansible/.ssh/authorized_keys && chown -R ansible:ansible ~ansible/.ssh && chmod 600 ~ansible/.ssh/authorized_keys"
+  sudo docker exec -it $n bash -lc '/usr/sbin/sshd -D &'   # lanza el SSHD
 done
 
 ```
+
+
+
+sudo docker exec -it node1 ps -ef | grep sshd
+sudo docker exec -it node2 ps -ef | grep sshd
+sudo docker exec -d node2 /usr/sbin/sshd -D
+sudo docker exec -d node1 /usr/sbin/sshd -D
+sudo docker exec -it node4 ps -ef | grep sshd
+
+
 
 ### 7.2 Inventario SSH
 

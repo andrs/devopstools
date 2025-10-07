@@ -12,7 +12,7 @@ scrape_configs:
       # Node Exporter expuesto en el host (9100)
       - targets: ['host.docker.internal:9100']   # mac/windows
         labels: { instance: 'host-node' }
-      - targets: ['localhost:9100']              # linux (si no resolviera host.docker.internal)
+      - targets: ['prometheus:9100']              # linux (si no resolviera host.docker.internal)
         labels: { instance: 'host-node' }
 
   - job_name: 'cadvisor'
