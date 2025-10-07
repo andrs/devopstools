@@ -32,6 +32,9 @@ kubectl run tester --image=curlimages/curl -it --rm --   sh -lc "curl http://172
 ansible-playbook -i hosts deploy_app.yml --tags "install"
 
 ansible-playbook -i hosts deploy_app.yml
+
+## desplie de los manifiestos de kubernetes con ansible
+ansible-playbook -i inventory.ini deploy_app.yml
 ```
 
 ## fichero hosts
