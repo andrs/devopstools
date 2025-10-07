@@ -11,7 +11,7 @@ services:
     ports:
       - "2376:2376"
     networks:
-      jenkins:
+      devopstools-jenkins:
         aliases:
           - docker
     command: --storage-driver overlay2
@@ -33,10 +33,10 @@ services:
       - "8080:8080"
       - "50000:50000"
     networks:
-      - jenkins
+      - devopstools-jenkins
 
 networks:
-  jenkins:
+  devopstools-jenkins:
     driver: bridge
 
 volumes:

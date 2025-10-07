@@ -11,4 +11,5 @@ sudo docker compose logs
 ```
 
 ## Removing Jenkins
+# remove all docker compose objects
 docker compose down --volumes --rmi all 

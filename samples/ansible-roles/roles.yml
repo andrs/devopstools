@@ -1,0 +1,10 @@
+---
+- hosts: web
+  roles:
+    - webserver
+  handlers:
+    - name: Reiniciar nginx
+      become: yes
+      service:
+        name: nginx
+        state: restarted
