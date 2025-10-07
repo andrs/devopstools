@@ -27,6 +27,7 @@ kubectl -n proyecto-final logs deploy/api
 ## run
 ```yaml
 kubectl run tester --image=curlimages/curl -it --rm --   sh -lc "curl http://172.20.251.174:80"
+kubectl run tester --image=curlimages/curl -it --rm --   sh -lc "curl http://10.0.3.190:5000"
 
 
 ansible-playbook -i hosts deploy_app.yml --tags "install"
@@ -36,6 +37,10 @@ ansible-playbook -i hosts deploy_app.yml
 ## desplie de los manifiestos de kubernetes con ansible
 ansible-playbook -i inventory.ini deploy_app.yml
 ```
+
+
+kubectl exec -it pod/api-68d7df7fb8-f7gw2 -- bash
+kubectl exec -it pod/api-68d7df7fb8-4wqm5 -- bash
 
 ## fichero hosts
 ```yaml

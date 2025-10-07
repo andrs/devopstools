@@ -6,23 +6,23 @@
   tasks:
     - name: Crear namespace
       command: kubectl apply -f k8s/00-namespace.yaml
-      args: { chdir: "{{ playbook_dir }}/.." }
+      args: { chdir: "{{ playbook_dir }}/." }
 
     - name: ConfigMap y Secret
       command: kubectl apply -f k8s/01-config-secrets.yaml
-      args: { chdir: "{{ playbook_dir }}/.." }
+      args: { chdir: "{{ playbook_dir }}/." }
 
     - name: Postgres (PVC + Deployment + Service)
       command: kubectl apply -f k8s/02-postgres.yaml
-      args: { chdir: "{{ playbook_dir }}/.." }
+      args: { chdir: "{{ playbook_dir }}/." }
 
     - name: API (Deployment + Service)
       command: kubectl apply -f k8s/03-api.yaml
-      args: { chdir: "{{ playbook_dir }}/.." }
+      args: { chdir: "{{ playbook_dir }}/." }
 
     - name: Ingress (opcional)
       command: kubectl apply -f k8s/04-ingress.yaml
-      args: { chdir: "{{ playbook_dir }}/.." }
+      args: { chdir: "{{ playbook_dir }}/." }
 
     - name: Esperar a que API esté lista
       command: kubectl -n {{ kube_namespace }} rollout status deploy/api --timeout=180s
