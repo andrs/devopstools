@@ -9,7 +9,7 @@
       args: { chdir: "{{ playbook_dir }}/.." }
 
     - name: ConfigMap y Secret
-      command: kubectl apply -f k8s/01-config.yaml
+      command: kubectl apply -f k8s/01-config-secrets.yaml
       args: { chdir: "{{ playbook_dir }}/.." }
 
     - name: Postgres (PVC + Deployment + Service)
