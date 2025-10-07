@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: andrs/flaskapi:5.0
+          image: andrs/flaskapi:10.0
           #image: usuario/flaskapi:1.0   # <-- pon tu imagen
           ports:
             - containerPort: 5000
