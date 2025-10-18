@@ -20,7 +20,7 @@ kubectl apply -f 03-db-init-job.yaml
 kubectl -n devops-lab get jobs
 
 # App + Worker
-kubectl apply -f 03-api.yaml
+kubectl apply -f 04-api.yaml
 kubectl apply -f 07-worker.yaml
 
 # pgAdmin
@@ -28,7 +28,7 @@ kubectl apply -f 08-pgadmin.yaml
 
 # Exposición:
 # Ingress (recomendado)
-kubectl apply -f 04-ingress.yaml
+kubectl apply -f 05-ingress.yaml
 # ...o NodePort:
 # kubectl apply -f 09-nodeport-api.yaml
 ```

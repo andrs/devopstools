@@ -34,6 +34,13 @@
 
 ---
 
+```instalacion de ansible 
+install ansible-link
+
+1328  pip3 install ansible-link jinja2
+pipx list
+```
+
 ```ini
 [web]
 localhost ansible_connection=local

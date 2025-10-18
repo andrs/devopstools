@@ -17,11 +17,11 @@
       args: { chdir: "{{ playbook_dir }}/." }
 
     - name: API (Deployment + Service)
-      command: kubectl apply -f k8s/03-api.yaml
+      command: kubectl apply -f k8s/04-api.yaml
       args: { chdir: "{{ playbook_dir }}/." }
 
     - name: Ingress (opcional)
-      command: kubectl apply -f k8s/04-ingress.yaml
+      command: kubectl apply -f k8s/05-ingress.yaml
       args: { chdir: "{{ playbook_dir }}/." }
 
     - name: Esperar a que API esté lista

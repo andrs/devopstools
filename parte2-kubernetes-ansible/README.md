@@ -25,7 +25,7 @@ kubectl -n proyecto-final logs deploy/api
 ```
 
 ## run
-```yaml
+```kubectl commands
 kubectl run tester --image=curlimages/curl -it --rm --   sh -lc "curl http://172.20.251.174:80"
 kubectl run tester --image=curlimages/curl -it --rm --   sh -lc "curl http://10.0.3.190:5000"
 
@@ -36,6 +36,12 @@ ansible-playbook -i hosts deploy_app.yml
 
 ## desplie de los manifiestos de kubernetes con ansible
 ansible-playbook -i inventory.ini deploy_app.yml
+
+docker build -t local/miap:1.0
+minikube image load local/miapp:1.0
+
+kubectl -n proyecto-final set image deploy/api api=local/miap:1.0 --record
+kubectl -n proyecto-final rollout status deply/api
 ```
 
 

@@ -24,14 +24,18 @@ services:
     container_name: pgadmin4_container
     restart: always
     ports:
-      - "8888:80"
+      - "8443:443"
     depends_on:
       - db
     environment:
       PGADMIN_DEFAULT_EMAIL: andres@domain.com
       PGADMIN_DEFAULT_PASSWORD: andres
+      PGADMIN_ENABLE_TLS: True
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+      - /home/ubuntu/docker_volumes/certs/certificate.crt:/certs/server.cert
+      - /home/ubuntu/docker_volumes/certs/certificate.key:/certs/server.key
+      - /tmp/servers.json:/pgadmin4/servers.json
     networks:
       - frontend
       - backend
@@ -39,12 +43,13 @@ services:
       - db
 
   db:
-    image: postgres:14
+    image: postgres:17
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB_NAME}
       POSTGRES_USER: ${POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: Europe/Madrid
     healthcheck:
       # used in flask container depends_on condition to wait for the DB to be ready
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB_NAME}" ]
