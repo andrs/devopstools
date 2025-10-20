@@ -1,7 +1,8 @@
 # Deploy a Flask App with PostgreSQL Using Docker Compose
-# Postgres and pgAdmin in Docker
+## Postgres and pgAdmin in Docker
 
-### The experiment involves setting up a PostgreSQL instance in Docker, a PGAdmin instance, and app and enabling communication between these two containers.
+### that experiment involves setting up a PostgreSQL instance in Docker, a PGAdmin instance, and app and enabling communication between these two containers.
+### access pgadmin cross security way
 
 ## Step 1: Project Structure
 ### Set up your project directory and virtual environment
@@ -58,7 +59,9 @@ openssl req -new -out server.csr -key server.key
 openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 ```
 
-``` Configure TLS to use pgAdmin 
+### Securing PgAdmin
+``` Configure TLS to use pgAdmin. 
+ 
 # create a directory in your $HOME that pgadmin docker can use
 mkdir /home/ubuntu/docker_volumes/
 mkdir /home/ubuntu/docker_volumes/certs/
@@ -78,6 +81,7 @@ so configure
 sudo chown -R 5050:5050 /home/ubuntu/Documents/certs
 sudo chown -R 5050:5050 /home/ubuntu/Documents/pgadmin
 
+
 sudo docker run -p 5050:443 \
 -v /home/ubuntu/docker_volumes/pgadmin:/var/lib/pgadmin \
 -v /home/ubuntu/docker_volumes/certs/certificate.crt:/certs/server.cert \
@@ -87,6 +91,14 @@ sudo docker run -p 5050:443 \
 -e 'PGADMIN_DEFAULT_PASSWORD=andres' \
 -e 'PGADMIN_ENABLE_TLS=True' \
 -d dpage/pgadmin4
+
+Install pgAdmin4
+
+# Pull the image
+docker pull dpage/pgadmin4
+# Of course you need to replace user@email.com and StrongPassword to your own values
+sudo docker run -p 5050:80 -e "PGADMIN_DEFAULT_EMAIL=user@email.com" -e "PGADMIN_DEFAULT_PASSWORD=StrongPassword" -d dpage/pgadmin4
+
 ```
 
 curl https://localhost:5050  -k
