@@ -45,6 +45,10 @@ sudo sudo docker run -it --name flask app:1.0 bash
 
 sudo docker exec -it flask bash
 
+docker build -t local/shell:1.3 .
+sudo docker run -it --name test3ss5 local/shell:1.6 bash
+sudo docker run -it --name testy --entrypoint="bash" local/shell:1.6
+
 # postgres
 ## acceso cliente psql
 psql -U andres -d andresdb
